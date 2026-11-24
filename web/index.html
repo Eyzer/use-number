@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>发文字号取号系统</title>
+<link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/>
+      <path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h4"/>
+    </svg>
+    <span id="siteName">发文字号取号系统</span>
+  </div>
+  <div class="spacer"></div>
+  <a class="link" href="/admin">管理后台</a>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <h1>领取发文字号</h1>
+    <p id="siteSub">内部公文发文字号统一管理</p>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <h2>新建领取</h2>
+      <div class="spacer"></div>
+      <span class="hint" id="currentTip"></span>
+    </div>
+
+    <div class="grid-2">
+      <div class="field">
+        <label>发文字号类型<span class="req">*</span></label>
+        <select class="select" id="typeSelect">
+          <option value="">请选择发文字号类型</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>预览编号</label>
+        <div class="preview" id="preview"><span class="placeholder">选择类型后显示</span></div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>公文标题<span class="req">*</span></label>
+      <input class="input" id="titleInput" maxlength="200" placeholder="请输入公文标题，例如：关于印发年度工作要点的通知">
+    </div>
+
+    <div class="grid-2">
+      <div class="field">
+        <label>领取人<span class="req">*</span></label>
+        <input class="input" id="receiverInput" maxlength="40" placeholder="请输入领取人姓名">
+      </div>
+      <div class="field">
+        <label>备注</label>
+        <input class="input" id="remarkInput" maxlength="200" placeholder="选填">
+      </div>
+    </div>
+
+    <div class="field" style="margin-bottom:22px">
+      <label>归档状态<span class="req">*</span></label>
+      <div class="segmented" id="archSeg">
+        <button type="button" data-v="0" class="on">未归档</button>
+        <button type="button" data-v="1">已归档</button>
+      </div>
+      <div class="field-tip">已归档表示该文件电子版已交保密室存档，可稍后在后台重新调整。</div>
+    </div>
+
+    <button class="btn btn-primary btn-lg" id="takeBtn">领取发文字号</button>
+  </section>
+
+  <section class="card" id="uploadCard" style="display:none">
+    <div class="card-head">
+      <h2>上传归档文件</h2>
+      <span class="hint" id="uploadDirTip"></span>
+      <div class="spacer"></div>
+      <span class="hint" id="uploadRuleTip"></span>
+    </div>
+    <div class="dropzone" id="dropzone">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 16V4"/><path d="M7.5 8.5 12 4l4.5 4.5"/><path d="M4 15v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/>
+      </svg>
+      <div class="dz-title">点击选择文件，或把文件拖到这里</div>
+      <div class="dz-sub">上传后自动按文件名匹配发文字号，匹配成功直接标记为已归档</div>
+      <input type="file" id="fileInput" multiple hidden>
+    </div>
+    <div class="upload-list" id="uploadList"></div>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <h2>领取记录</h2>
+      <span class="hint">按号码从大到小</span>
+      <div class="spacer"></div>
+      <input class="input" id="searchInput" style="width:200px;height:36px;padding:6px 12px;font-size:13.5px" placeholder="搜索字号 / 标题 / 领取人">
+      <select class="select" id="archiveFilter" style="width:120px;height:36px;padding:6px 30px 6px 12px;font-size:13.5px">
+        <option value="">全部</option>
+        <option value="1">已归档</option>
+        <option value="0">未归档</option>
+      </select>
+      <button class="btn btn-secondary btn-sm" id="refreshBtn">刷新</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:64px">序号</th>
+            <th style="width:190px">发文字号</th>
+            <th>公文标题</th>
+            <th style="width:110px">领取人</th>
+            <th style="width:100px">归档</th>
+            <th style="width:150px">领取时间</th>
+          </tr>
+        </thead>
+        <tbody id="recordBody"><tr><td colspan="6" class="empty">加载中…</td></tr></tbody>
+      </table>
+    </div>
+    <div class="pager" id="pager"></div>
+  </section>
+</main>
+
+<div class="modal" id="successModal">
+  <div class="modal-card" style="max-width:420px">
+    <div class="modal-head"><h3>领取成功</h3><button class="x" onclick="closeSuccess()">✕</button></div>
+    <div style="font-size:13.5px;color:#6e6e73">本次发文字号</div>
+    <div class="result-num" id="successNum">—</div>
+    <div style="font-size:13.5px;color:#6e6e73;margin-top:6px" id="successMeta"></div>
+    <div class="modal-foot"><button class="btn btn-primary" onclick="closeSuccess()">完成</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="/static/app.js"></script>
+</body>
+</html>

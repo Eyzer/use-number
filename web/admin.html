@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>管理后台</title>
+<link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<div class="admin-body">
+  <aside class="sidebar">
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h4"/>
+      </svg>
+      <span>管理后台</span>
+    </div>
+    <nav class="nav">
+      <a href="#" class="on" data-tab="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>
+        <span>控制台</span>
+      </a>
+      <a href="#" data-tab="types">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M10 6h10M10 12h10M10 18h10"/><path d="M4 6h.01M4 12h.01M4 18h.01"/></svg>
+        <span>字号类型</span>
+      </a>
+      <a href="#" data-tab="users">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3.4"/><path d="M2.8 20a6.2 6.2 0 0 1 12.4 0"/><path d="M17 11h5M19.5 8.5v5"/></svg>
+        <span>用户</span>
+      </a>
+      <a href="#" data-tab="records">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>
+        <span>领取记录</span>
+      </a>
+      <a href="#" data-tab="import">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7.5 11 4.5 4.5 4.5-4.5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+        <span>批量导入</span>
+      </a>
+      <a href="#" data-tab="settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.7 1.7 0 0 0-2.87 1.2V21a2 2 0 1 1-4 0v-.1A1.7 1.7 0 0 0 7 19.4a1.7 1.7 0 0 0-1.87.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 3 15a1.7 1.7 0 0 0-1.55-1H1.3a2 2 0 1 1 0-4h.1A1.7 1.7 0 0 0 3 9a1.7 1.7 0 0 0-.34-1.87l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 7 4.6h.08A1.7 1.7 0 0 0 8.3 3v-.1a2 2 0 1 1 4 0V3a1.7 1.7 0 0 0 1.02 1.55"/></svg>
+        <span>系统设置</span>
+      </a>
+    </nav>
+    <div class="foot">
+      <nav class="nav">
+        <a href="/">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>
+          <span>返回前台</span>
+        </a>
+        <a href="#" onclick="logout();return false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>
+          <span>退出登录</span>
+        </a>
+      </nav>
+    </div>
+  </aside>
+
+  <main class="admin-main">
+    <!-- 控制台 -->
+    <section class="tab on" id="tab-dashboard">
+      <div class="page-title">控制台</div>
+      <div class="page-sub" id="welcome">发文字号领取情况总览</div>
+      <div class="stats">
+        <div class="stat"><div class="k">领取记录</div><div class="v" id="stRecords">—</div></div>
+        <div class="stat"><div class="k">已归档</div><div class="v" id="stArchived">—</div></div>
+        <div class="stat"><div class="k">未归档</div><div class="v" id="stUnarchived">—</div></div>
+        <div class="stat"><div class="k">本月领取</div><div class="v" id="stMonth">—</div></div>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <h2>领取趋势</h2>
+          <span class="hint" id="trendHint"></span>
+          <div class="spacer"></div>
+          <div class="segmented" id="trendSeg">
+            <button class="on" data-range="daily">按日</button>
+            <button data-range="weekly">按周</button>
+            <button data-range="monthly">按月</button>
+          </div>
+        </div>
+        <div class="chart" id="chart"></div>
+      </div>
+    </section>
+
+    <!-- 字号类型 -->
+    <section class="tab" id="tab-types">
+      <div style="display:flex;align-items:flex-end;margin-bottom:20px">
+        <div>
+          <div class="page-title">字号类型</div>
+          <div class="page-sub" style="margin-bottom:0">维护前缀、后缀与当前编号</div>
+        </div>
+        <div style="flex:1"></div>
+        <button class="btn btn-primary" onclick="openTypeModal()">添加类型</button>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th style="width:60px">ID</th><th>字号格式</th><th style="width:90px">当前编号</th>
+              <th>描述</th><th style="width:90px">状态</th><th style="width:90px">领取数</th><th style="width:150px">操作</th>
+            </tr></thead>
+            <tbody id="typeBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 用户 -->
+    <section class="tab" id="tab-users">
+      <div style="display:flex;align-items:flex-end;margin-bottom:20px">
+        <div>
+          <div class="page-title">用户</div>
+          <div class="page-sub" style="margin-bottom:0">本地后台账号与 DzzOffice 同步账号</div>
+        </div>
+        <div style="flex:1"></div>
+        <button class="btn btn-primary" onclick="openUserModal()">添加用户</button>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th style="width:60px">ID</th><th>账号</th><th>姓名</th><th style="width:80px">角色</th><th style="width:100px">来源</th><th>备注</th><th style="width:150px">操作</th></tr></thead>
+            <tbody id="userBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 领取记录 -->
+    <section class="tab" id="tab-records">
+      <div style="display:flex;align-items:flex-end;margin-bottom:20px;gap:10px;flex-wrap:wrap">
+        <div>
+          <div class="page-title">领取记录</div>
+          <div class="page-sub" style="margin-bottom:0">按号码从大到小，可编辑领取人与归档状态</div>
+        </div>
+        <div style="flex:1"></div>
+        <input class="input" id="recSearch" style="width:220px;height:38px" placeholder="搜索字号 / 标题 / 领取人">
+        <select class="select" id="recArch" style="width:120px;height:38px">
+          <option value="">全部</option><option value="1">已归档</option><option value="0">未归档</option>
+        </select>
+        <button class="btn btn-secondary" onclick="loadAdminRecords(1)">刷新</button>
+        <button class="btn btn-secondary btn-match" onclick="autoMatch()">自动匹配归档</button>
+        <button class="btn btn-primary" onclick="exportRecords()">导出 CSV</button>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th style="width:60px">序号</th><th style="width:180px">发文字号</th><th>公文标题</th>
+              <th style="width:100px">领取人</th><th style="width:95px">归档</th><th style="width:150px">领取时间</th><th style="width:150px">操作</th>
+            </tr></thead>
+            <tbody id="recBody"></tbody>
+          </table>
+        </div>
+        <div class="pager" id="recPager"></div>
+      </div>
+      <div id="matchResult" style="font-size:13.5px;line-height:1.9;color:#6e6e73;margin-top:-6px"></div>
+    </section>
+
+    <!-- 批量导入 -->
+    <section class="tab" id="tab-import">
+      <div class="page-title">批量导入</div>
+      <div class="page-sub">把已有的公文标题和编号一次性录入</div>
+      <div class="card">
+        <div class="field">
+          <label>导入到字号类型<span class="req">*</span></label>
+          <select class="select" id="importType"></select>
+        </div>
+        <div class="field">
+          <label>粘贴内容<span class="req">*</span></label>
+          <textarea class="textarea" id="importText" placeholder="每行一条，编号与标题之间用竖线 | 或 Tab 分隔，例如：
+国发〔2026〕1号|关于印发年度工作要点的通知
+国发〔2026〕2号|关于调整领导小组成员的通知
+国发〔2026〕3号
+也支持用空格分隔：国发〔2026〕4号 关于加强值班工作的通知"></textarea>
+        </div>
+        <div style="font-size:13px;color:#86868b;line-height:1.8;margin-bottom:18px">
+          规则：编号必须与该类型的前缀、后缀完全匹配，中间为数字；已存在的编号自动跳过；导入后当前编号会自动接续到最大编号之后。
+        </div>
+        <button class="btn btn-primary" onclick="doImport()">开始导入</button>
+        <div id="importResult" style="margin-top:18px;font-size:13.5px;line-height:1.9;color:#6e6e73"></div>
+      </div>
+    </section>
+
+    <!-- 系统设置 -->
+    <section class="tab" id="tab-settings">
+      <div class="page-title">系统设置</div>
+      <div class="page-sub">站点信息、归档目录与 DzzOffice 单点登录</div>
+      <div class="card">
+        <div class="card-head"><h2>站点信息</h2></div>
+        <div class="grid-2">
+          <div class="field"><label>站点名称</label><input class="input" id="setSiteName"></div>
+          <div class="field"><label>副标题</label><input class="input" id="setSiteSub"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h2>归档目录</h2><span class="hint">自动匹配归档状态用</span></div>
+        <div class="field">
+          <label>本地目录<span class="hint" style="margin-left:6px">每行一个，可填多个</span></label>
+          <textarea class="textarea" id="setArchiveDir" style="min-height:104px" placeholder="D:\档案\2026
+/mnt/archive/2026"></textarea>
+          <div class="field-tip">
+            程序会递归读取这些目录下的文件名，与领取记录逐条比对：文件名里出现该记录的发文字号（〔〕[]（）等括号写法都能识别），或出现完整的公文标题，
+            就把这条记录标记为已归档并记下匹配到的文件；都对不上的标记为未归档。扫描的是运行本程序的这台机器上的路径，
+            麒麟系统请填 /opt/... 这类 Linux 路径，Windows 版填 D:\... 即可。
+          </div>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-primary" onclick="saveSettings()">保存设置</button>
+          <button class="btn btn-ghost" onclick="checkArchiveDir()">检测目录</button>
+        </div>
+        <div id="archiveDirResult" style="margin-top:14px;font-size:13.5px;line-height:1.9;color:#6e6e73"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2>前台上传</h2>
+          <span class="hint">领取页上传归档文件</span>
+          <div class="spacer"></div>
+          <label class="switch"><input type="checkbox" id="setUploadEnabled"><span class="track"></span><span class="label">启用</span></label>
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label>命名规则</label>
+            <input class="input" id="setUploadRule" placeholder="{字号}-{标题}">
+            <div class="field-tip">
+              占位符：{字号} 指发文字号（如 国发〔2026〕102号），{标题} 指公文标题。
+              中间分隔符不限，短横线、下划线、空格都可以。例：国发〔2026〕102号-关于印发xx的通知.pdf。
+              上传的文件保存在上面「归档目录」的第一行目录里。
+            </div>
+          </div>
+          <div class="field">
+            <label>允许的扩展名</label>
+            <input class="input" id="setUploadExt" placeholder="pdf,doc,docx">
+            <div class="field-tip">逗号分隔，不带点，例如 pdf,doc,docx。留空表示不限制类型。</div>
+          </div>
+          <div class="field">
+            <label>单文件上限（MB）</label>
+            <input class="input" id="setUploadMaxMb" type="number" min="1" placeholder="50">
+          </div>
+          <div class="field">
+            <label>规则测试</label>
+            <div style="display:flex;gap:8px">
+              <input class="input" id="ruleTestName" placeholder="输入示例文件名，例如 国发〔2026〕102号-关于xx的通知.pdf">
+              <button class="btn btn-secondary" onclick="testRule()" style="white-space:nowrap">测试</button>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:6px">
+          <button class="btn btn-primary" onclick="saveSettings()">保存设置</button>
+        </div>
+        <div id="ruleResult" style="margin-top:14px;font-size:13.5px;color:#6e6e73"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2>DzzOffice 登录</h2>
+          <div class="spacer"></div>
+          <label class="switch"><input type="checkbox" id="setDzzEnabled"><span class="track"></span><span class="label">启用</span></label>
+        </div>
+        <div class="grid-2">
+          <div class="field"><label>数据库地址</label><input class="input" id="setDzzHost" placeholder="127.0.0.1"></div>
+          <div class="field"><label>端口</label><input class="input" id="setDzzPort" placeholder="3306"></div>
+          <div class="field"><label>数据库账号</label><input class="input" id="setDzzUser" placeholder="root"></div>
+          <div class="field"><label>数据库密码</label><input class="input" id="setDzzPass" type="password" placeholder="留空表示无密码"></div>
+          <div class="field"><label>库名</label><input class="input" id="setDzzDb" placeholder="dzzoffice"></div>
+          <div class="field"><label>表前缀</label><input class="input" id="setDzzPrefix" placeholder="dzz_"></div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:6px">
+          <button class="btn btn-primary" onclick="saveSettings()">保存设置</button>
+          <button class="btn btn-ghost" onclick="testDzz()">测试连接</button>
+        </div>
+        <div id="dzzResult" style="margin-top:14px;font-size:13.5px;color:#6e6e73"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-card" id="modalCard">
+    <div class="modal-head"><h3 id="modalTitle"></h3><button class="x" onclick="closeModal()">✕</button></div>
+    <div id="modalBody"></div>
+    <div class="modal-foot" id="modalFoot"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="/static/admin.js"></script>
+</body>
+</html>

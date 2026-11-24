@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>管理后台登录</title>
+<link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<div class="login-page">
+  <div class="login-card">
+    <div class="mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/>
+        <path d="M14 3v5h5"/><path d="M9 13h6"/><path d="M9 17h4"/>
+      </svg>
+    </div>
+    <h1>管理后台</h1>
+    <div class="sub">请选择登录方式进入后台</div>
+
+    <div class="segmented" style="margin-bottom:20px;width:100%">
+      <button class="on" data-mode="local" style="flex:1">本地账号</button>
+      <button data-mode="dzz" style="flex:1">DzzOffice</button>
+    </div>
+
+    <div class="login-err" id="err"></div>
+
+    <div class="field">
+      <label>账号</label>
+      <input class="input" id="username" autocomplete="username" placeholder="请输入账号">
+    </div>
+    <div class="field" style="margin-bottom:24px">
+      <label>密码</label>
+      <input class="input" id="password" type="password" autocomplete="current-password" placeholder="请输入密码">
+    </div>
+
+    <button class="btn btn-primary" id="loginBtn" style="width:100%;height:46px">登录</button>
+
+    <div class="tip" id="tip">使用本地管理员账号登录。默认账号 admin。</div>
+  </div>
+</div>
+
+<script>
+let mode = 'local';
+
+document.querySelectorAll('.segmented button').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.segmented button').forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+    mode = b.dataset.mode;
+    document.getElementById('tip').textContent = mode === 'dzz'
+      ? '使用 DzzOffice 账号登录，仅管理员组账号可进入后台。'
+      : '使用本地管理员账号登录。默认账号 admin。';
+    hideErr();
+  });
+});
+
+function showErr(m) {
+  const e = document.getElementById('err');
+  e.textContent = m;
+  e.style.display = 'block';
+}
+function hideErr() { document.getElementById('err').style.display = 'none'; }
+
+async function doLogin() {
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+  if (!username || !password) return showErr('请输入账号和密码');
+  hideErr();
+
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true;
+  btn.textContent = '登录中…';
+  try {
+    const r = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mode, username, password })
+    });
+    const d = await r.json();
+    if (!r.ok) { showErr(d.error || '登录失败'); return; }
+    window.location.href = '/admin';
+  } catch (e) {
+    showErr('网络错误，请稍后重试');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '登录';
+  }
+}
+
+document.getElementById('loginBtn').addEventListener('click', doLogin);
+document.getElementById('password').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('username').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('password').focus(); });
+</script>
+</body>
+</html>
